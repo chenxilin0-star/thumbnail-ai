@@ -12,14 +12,49 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thumbnailai.com";
+
 export const metadata: Metadata = {
-  title: "ThumbnailAI - 10秒生成爆款视频封面",
-  description: "AI 驱动的视频缩略图生成器，让每个创作者都能拥有专业设计师的能力。支持 YouTube、B站、抖音等平台。",
-  keywords: ["thumbnail generator", "youtube thumbnail", "video cover", "AI", "缩略图生成器", "视频封面"],
+  title: {
+    default: "ThumbnailAI - AI Video Thumbnail Generator | 10秒生成爆款视频封面",
+    template: "%s | ThumbnailAI",
+  },
+  description:
+    "Free AI-powered video thumbnail generator. Create stunning YouTube, Bilibili, TikTok thumbnails in 10 seconds. 5 styles, 3 platforms. 免费AI视频封面生成器。",
+  keywords: [
+    "thumbnail generator",
+    "AI thumbnail",
+    "youtube thumbnail maker",
+    "video cover generator",
+    "bilibili cover",
+    "tiktok thumbnail",
+    "缩略图生成器",
+    "视频封面生成",
+    "AI封面",
+    "YouTube封面制作",
+    "B站封面",
+    "抖音封面",
+  ],
+  metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "ThumbnailAI - 10秒生成爆款视频封面",
-    description: "AI 驱动的视频缩略图生成器",
+    title: "ThumbnailAI - AI Video Thumbnail Generator",
+    description:
+      "Create stunning video thumbnails in 10 seconds with AI. Free for YouTube, Bilibili, TikTok.",
+    url: siteUrl,
+    siteName: "ThumbnailAI",
     type: "website",
+    locale: "zh_CN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ThumbnailAI - AI Video Thumbnail Generator",
+    description: "Create stunning video thumbnails in 10 seconds with AI.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
 };
 
@@ -28,8 +63,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "ThumbnailAI",
+    url: siteUrl,
+    description: "AI-powered video thumbnail generator",
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  };
+
   return (
     <html lang="zh-CN">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
