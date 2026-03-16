@@ -1,10 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
+export const runtime = 'edge';
 
-const client = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY || '',
-  baseURL: 'https://api.deepseek.com/v1',
-})
+import { NextRequest, NextResponse } from 'next/server'
 
 const stylePrompts: Record<string, string> = {
   tech: '现代科技风格，深色背景配蓝色渐变，发光文字效果，适合科技/编程视频',
@@ -22,15 +18,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '请输入视频标题' }, { status: 400 })
     }
 
-    // 生成封面设计方案
     const stylePrompt = stylePrompts[style] || stylePrompts.tech
 
-    const response = await client.chat.completions.create({
-      model: 'deepseek-chat',
-      messages: [
-        {
-          role: 'system',
-          content: `你是一个专业的视频封面设计师。你需要根据用户提供的视频标题和描述，生成3个封面设计方案。
+    // 使用 fetch 直接调用 DeepSeek API
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: `你是一个专业的视频封面设计师。你需要根据用户提供的视频标题和描述，生成3个封面设计方案。
 
 每个方案需要包含：
 1. 背景描述（颜色、渐变、图片风格）
@@ -49,21 +51,23 @@ export async function POST(request: NextRequest) {
     }
   ]
 }`
-        },
-        {
-          role: 'user',
-          content: `视频标题：${title}
+          },
+          {
+            role: 'user',
+            content: `视频标题：${title}
 ${description ? `视频描述：${description}` : ''}
 风格要求：${stylePrompt}
 平台：${platform}
 
 请生成3个封面设计方案。`
-        }
-      ],
-      response_format: { type: 'json_object' }
+          }
+        ],
+        response_format: { type: 'json_object' }
+      }),
     })
 
-    const content = response.choices[0]?.message?.content
+    const data = await response.json()
+    const content = data.choices?.[0]?.message?.content
     let designs = []
 
     if (content) {
@@ -75,7 +79,6 @@ ${description ? `视频描述：${description}` : ''}
       }
     }
 
-    // 生成预览 URL（实际项目中应该生成真实图片）
     const thumbnails = designs.map((design: any, index: number) => {
       const colors = design.colors || ['#8B5CF6', '#EC4899']
       return {
