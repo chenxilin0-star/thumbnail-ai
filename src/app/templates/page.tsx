@@ -71,85 +71,105 @@ const featuredTemplates = [
   },
 ]
 
-// 更多模板 - 使用 SVG 渐变
+// 更多模板 - 全部使用 AI 生成的真实图片
 const moreTemplates = [
   {
-    id: 1, category: 'tech', title: '10个AI工具推荐',
-    colors: ['#6366F1', '#8B5CF6'], tag: '',
+    id: 'more-tech1',
+    category: 'tech',
+    title: 'AI 工具推荐',
     subtitle: '效率翻倍秘籍',
+    image: '/templates/more/tech1.png',
+    tag: '',
   },
   {
-    id: 2, category: 'tech', title: 'ChatGPT 实战教程',
-    colors: ['#0EA5E9', '#6366F1'], tag: '',
+    id: 'more-tech2',
+    category: 'tech',
+    title: 'ChatGPT 实战教程',
     subtitle: '从入门到精通',
+    image: '/templates/more/tech2.png',
+    tag: '',
   },
   {
-    id: 3, category: 'gaming', title: '原神4.0全攻略',
-    colors: ['#10B981', '#059669'], tag: '',
-    subtitle: '新版本必看',
+    id: 'more-game1',
+    category: 'gaming',
+    title: '游戏世界探险',
+    subtitle: '精彩攻略',
+    image: '/templates/more/game1.png',
+    tag: '',
   },
   {
-    id: 4, category: 'gaming', title: '我的世界生存指南',
-    colors: ['#F59E0B', '#D97706'], tag: '',
+    id: 'more-game2',
+    category: 'gaming',
+    title: '沙盒生存指南',
     subtitle: '新手必备',
+    image: '/templates/more/game2.png',
+    tag: '',
   },
   {
-    id: 5, category: 'business', title: '个人品牌打造',
-    colors: ['#7C3AED', '#4F46E5'], tag: '',
+    id: 'more-game3',
+    category: 'gaming',
+    title: '手游上分技巧',
+    subtitle: '段位提升',
+    image: '/templates/more/game3.png',
+    tag: '',
+  },
+  {
+    id: 'more-biz1',
+    category: 'business',
+    title: '个人品牌打造',
     subtitle: '从0到1',
+    image: '/templates/more/biz1.png',
+    tag: '',
   },
   {
-    id: 6, category: 'lifestyle', title: '一周减脂餐分享',
-    colors: ['#EC4899', '#F43F5E'], tag: '',
-    subtitle: '健康又好吃',
+    id: 'more-life1',
+    category: 'lifestyle',
+    title: '健康减脂餐',
+    subtitle: '营养又美味',
+    image: '/templates/more/life1.png',
+    tag: '',
   },
   {
-    id: 7, category: 'lifestyle', title: '房间改造Vlog',
-    colors: ['#F97316', '#EF4444'], tag: '',
-    subtitle: '花500块焕然一新',
+    id: 'more-life2',
+    category: 'lifestyle',
+    title: '房间改造 Vlog',
+    subtitle: '焕然一新',
+    image: '/templates/more/life2.png',
+    tag: '',
   },
   {
-    id: 8, category: 'education', title: '英语口语速成',
-    colors: ['#14B8A6', '#0D9488'], tag: '',
+    id: 'more-edu1',
+    category: 'education',
+    title: '英语口语速成',
     subtitle: '30天流利说',
+    image: '/templates/more/edu1.png',
+    tag: '',
   },
   {
-    id: 9, category: 'education', title: 'Python入门教程',
-    colors: ['#3B82F6', '#1D4ED8'], tag: '',
+    id: 'more-edu2',
+    category: 'education',
+    title: 'Python 入门',
     subtitle: '零基础也能学',
+    image: '/templates/more/edu2.png',
+    tag: '',
   },
   {
-    id: 10, category: 'tech', title: '2026最强笔记本',
-    colors: ['#8B5CF6', '#EC4899'], tag: '',
-    subtitle: '横评对比',
+    id: 'more-tech3',
+    category: 'tech',
+    title: '数码产品评测',
+    subtitle: '真实体验',
+    image: '/templates/more/tech3.png',
+    tag: '',
   },
   {
-    id: 11, category: 'gaming', title: '王者荣耀上分技巧',
-    colors: ['#EF4444', '#B91C1C'], tag: '',
-    subtitle: '钻石到星耀',
-  },
-  {
-    id: 12, category: 'dramatic', title: '爆款秘籍',
-    colors: ['#1E293B', '#475569'], tag: '',
+    id: 'more-drama1',
+    category: 'dramatic',
+    title: '爆款秘籍',
     subtitle: '流量密码',
+    image: '/templates/more/drama1.png',
+    tag: '',
   },
 ]
-
-function TemplateSVG({ title, subtitle, colors }: { title: string; subtitle: string; colors: string[] }) {
-  return (
-    <svg viewBox="0 0 640 360" className="w-full h-full">
-      <defs>
-        <linearGradient id={`grad-${title}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={colors[0]} />
-          <stop offset="100%" stopColor={colors[1]} />
-        </linearGradient>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#grad-${title})`} />
-      <text x="50%" y="42%" textAnchor="middle" fill="white" fontSize="32" fontWeight="bold" fontFamily="system-ui">{title}</text>
-      <text x="50%" y="58%" textAnchor="middle" fill="white" fontSize="18" opacity="0.85" fontFamily="system-ui">{subtitle}</text>
-    </svg>
-  )
-}
 
 export default function TemplatesPage() {
   const [activeCategory, setActiveCategory] = useState('all')
@@ -228,7 +248,7 @@ export default function TemplatesPage() {
           </>
         )}
 
-        {/* 更多模板 - SVG 渐变 */}
+        {/* 更多模板 - AI 生成的真实图片 */}
         {filteredMore.length > 0 && (
           <>
             <h2 className="text-xl font-semibold mb-4">更多模板</h2>
@@ -236,7 +256,13 @@ export default function TemplatesPage() {
               {filteredMore.map(tpl => (
                 <Card key={tpl.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="aspect-video relative">
-                    <TemplateSVG title={tpl.title} subtitle={tpl.subtitle} colors={tpl.colors} />
+                    <Image
+                      src={tpl.image}
+                      alt={tpl.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Link href={`/generate?style=${tpl.category}&title=${encodeURIComponent(tpl.title)}`}>
                         <Button>
