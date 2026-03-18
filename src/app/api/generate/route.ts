@@ -29,42 +29,42 @@ const platforms: Record<string, PlatformConfig> = {
     width: 1280, 
     height: 720, 
     ratio: '16:9',
-    promptHint: 'video thumbnail style, bold text, expressive design, high contrast, 16:9 widescreen, professional content creator aesthetic'
+    promptHint: 'video thumbnail, bold text, expressive design, high contrast, professional content creator aesthetic'
   },
   tiktok: { 
     name: 'TikTok', 
     width: 1080, 
     height: 1920, 
     ratio: '9:16',
-    promptHint: 'vertical video thumbnail, trendy style, vibrant colors, dynamic energy, vertical 9:16 format, social media viral aesthetic, eye-catching for mobile scroll'
+    promptHint: 'vertical video thumbnail, trendy style, vibrant colors, dynamic energy, social media viral aesthetic'
   },
   instagram: { 
     name: 'Instagram', 
     width: 1080, 
     height: 1080, 
     ratio: '1:1',
-    promptHint: 'square video thumbnail, aesthetic lifestyle vibe, clean minimalist design, square 1:1 format, influencer style, cohesive color palette'
+    promptHint: 'square video thumbnail, aesthetic lifestyle vibe, clean minimalist design, influencer style'
   },
   bilibili: { 
     name: 'B站', 
     width: 1920, 
     height: 1080, 
     ratio: '16:9',
-    promptHint: 'video cover design, anime gaming elements, Asian video style, youth oriented design, high saturation colors'
+    promptHint: 'video cover design, anime gaming elements, Asian video style, youth oriented design'
   },
   douyin: { 
     name: '抖音', 
     width: 1080, 
     height: 1920, 
     ratio: '9:16',
-    promptHint: 'vertical short video cover, trendy fashion style, viral aesthetic, vertical 9:16, mobile optimized, high contrast, attention grabbing'
+    promptHint: 'vertical short video cover, trendy fashion style, viral aesthetic, high contrast'
   },
   xiaohongshu: { 
     name: '小红书', 
     width: 1242, 
     height: 1660, 
     ratio: '3:4',
-    promptHint: 'lifestyle content cover, aesthetic notes style, 3:4 vertical format, soft tones, refined life feeling, friendly design'
+    promptHint: 'lifestyle content cover, aesthetic notes style, soft tones, refined life feeling'
   },
 }
 
@@ -93,10 +93,8 @@ const styles: Record<string, StyleConfig> = {
 
 function buildPrompt(title: string, description: string | undefined, style: StyleConfig, platform: PlatformConfig): string {
   const promptParts = [
-    // 平台专属风格（最重要，放在最前面）
+    // 平台专属风格
     platform.promptHint,
-    // 核心定位
-    'professional video thumbnail design',
     // 视频标题
     `main title "${title}" prominently displayed`,
     // 描述补充
@@ -105,10 +103,7 @@ function buildPrompt(title: string, description: string | undefined, style: Styl
     style.promptSuffix,
     // 质量要求
     'high click-through rate',
-    'eye-catching',
     'professional graphic design',
-    'vibrant colors',
-    'high resolution 2K',
   ]
   
   return promptParts.filter(Boolean).join(', ')
@@ -148,7 +143,7 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${sessionId}`,
       },
       body: JSON.stringify({
-        model: 'jimeng-4.5',
+        model: 'jimeng-5.0',
         prompt: prompt,
         ratio: platformConfig.ratio,
         resolution: '2k',
