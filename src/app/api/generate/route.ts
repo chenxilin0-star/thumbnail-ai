@@ -29,42 +29,42 @@ const platforms: Record<string, PlatformConfig> = {
     width: 1280, 
     height: 720, 
     ratio: '16:9',
-    promptHint: 'YouTube thumbnail style, bold text, expressive faces, high contrast, 16:9 widescreen, clickbait optimized, professional YouTuber aesthetic'
+    promptHint: 'video thumbnail style, bold text, expressive design, high contrast, 16:9 widescreen, professional content creator aesthetic'
   },
   tiktok: { 
     name: 'TikTok', 
     width: 1080, 
     height: 1920, 
     ratio: '9:16',
-    promptHint: 'TikTok vertical thumbnail, trendy Gen-Z style, vibrant colors, dynamic energy, vertical 9:16 format, social media viral aesthetic, eye-catching for mobile scroll'
+    promptHint: 'vertical video thumbnail, trendy style, vibrant colors, dynamic energy, vertical 9:16 format, social media viral aesthetic, eye-catching for mobile scroll'
   },
   instagram: { 
     name: 'Instagram', 
     width: 1080, 
     height: 1080, 
     ratio: '1:1',
-    promptHint: 'Instagram square post, aesthetic lifestyle vibe, clean minimalist design, Instagram feed optimized, square 1:1 format, influencer style, cohesive color palette'
+    promptHint: 'square video thumbnail, aesthetic lifestyle vibe, clean minimalist design, square 1:1 format, influencer style, cohesive color palette'
   },
   bilibili: { 
     name: 'B站', 
     width: 1920, 
     height: 1080, 
     ratio: '16:9',
-    promptHint: 'Bilibili封面风格, 动漫游戏元素, 中文视频封面, 二次元美学, 弹幕网站风格, 年轻化设计, 高饱和度色彩'
+    promptHint: 'video cover design, anime gaming elements, Asian video style, youth oriented design, high saturation colors'
   },
   douyin: { 
     name: '抖音', 
     width: 1080, 
     height: 1920, 
     ratio: '9:16',
-    promptHint: '抖音封面风格, 竖版短视频, 潮流时尚, 网红美学, 竖屏9:16, 手机端优化, 高对比度, 吸引眼球'
+    promptHint: 'vertical short video cover, trendy fashion style, viral aesthetic, vertical 9:16, mobile optimized, high contrast, attention grabbing'
   },
   xiaohongshu: { 
     name: '小红书', 
     width: 1242, 
     height: 1660, 
     ratio: '3:4',
-    promptHint: '小红书封面风格, 种草笔记美学, 生活分享感, 3:4竖版, 柔和色调, 精致生活感, 女性友好设计, 文艺清新'
+    promptHint: 'lifestyle content cover, aesthetic notes style, 3:4 vertical format, soft tones, refined life feeling, friendly design'
   },
 }
 
