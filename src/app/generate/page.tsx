@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -31,7 +31,7 @@ interface Thumbnail {
   height: number
 }
 
-export default function GeneratePage() {
+function GenerateContent() {
   const t = useTranslations('generate')
   const searchParams = useSearchParams()
   
@@ -89,7 +89,6 @@ export default function GeneratePage() {
     setThumbnails([])
 
     try {
-      // 使用 AbortController 设置 120 秒超时
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 120000)
 
@@ -109,7 +108,6 @@ export default function GeneratePage() {
 
       clearTimeout(timeoutId)
 
-      // 先检查响应是否有效
       const text = await response.text()
       if (!text) {
         throw new Error('Server returned empty response')
@@ -141,7 +139,6 @@ export default function GeneratePage() {
 
   const handleDownload = async (url: string, index: number) => {
     try {
-      // If it's a base64 data URL, download directly
       if (url.startsWith('data:')) {
         const link = document.createElement('a')
         link.href = url
@@ -150,7 +147,6 @@ export default function GeneratePage() {
         return
       }
 
-      // Otherwise fetch and download
       const response = await fetch(url)
       const blob = await response.blob()
       const blobUrl = URL.createObjectURL(blob)
@@ -337,7 +333,6 @@ export default function GeneratePage() {
           </div>
         </div>
 
-        {/* 图片预览弹窗 */}
         {previewImage && (
           <div 
             className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
@@ -369,5 +364,26 @@ export default function GeneratePage() {
         )}
       </div>
     </main>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 py-8">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="text-center py-16">
+          <Loader2 className="w-12 h-12 mx-auto animate-spin text-purple-500" />
+          <p className="mt-4 text-slate-500">加载中...</p>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default function GeneratePage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <GenerateContent />
+    </Suspense>
   )
 }

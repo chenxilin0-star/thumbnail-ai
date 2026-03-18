@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
-const isDev = process.env.NODE_ENV === 'development';
-
 const nextConfig = {
-  // 开发模式不使用静态导出，以支持 API 路由
-  // 生产构建时使用静态导出
-  ...(isDev ? {} : { output: 'export' }),
+  // 不使用静态导出，以支持 API 路由（生成图片需要调用 jimeng-api）
   images: {
     unoptimized: true,
   },
