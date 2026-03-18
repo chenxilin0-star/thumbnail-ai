@@ -19,7 +19,7 @@ const categories = [
   { id: 'dramatic', name: '震撼' },
 ]
 
-// 精选模板 - 使用真实 AI 生成的封面图
+// 精选模板 - 使用真实 AI 生成的封面图，每个模板带提示词
 const featuredTemplates = [
   {
     id: 'featured-tech',
@@ -28,6 +28,7 @@ const featuredTemplates = [
     subtitle: '效率翻倍秘籍',
     image: '/templates/tech-ai.png',
     tag: '热门',
+    prompt: '10个超好用的AI工具推荐，让你的工作效率翻倍',
   },
   {
     id: 'featured-gaming',
@@ -36,6 +37,7 @@ const featuredTemplates = [
     subtitle: '高手进阶指南',
     image: '/templates/gaming.png',
     tag: '热门',
+    prompt: '游戏高手进阶攻略，从菜鸟到大神的必经之路',
   },
   {
     id: 'featured-business',
@@ -44,6 +46,7 @@ const featuredTemplates = [
     subtitle: '月入过万攻略',
     image: '/templates/business.png',
     tag: '',
+    prompt: '普通人如何通过副业月入过万？实操指南分享',
   },
   {
     id: 'featured-lifestyle',
@@ -52,6 +55,7 @@ const featuredTemplates = [
     subtitle: '日常 Vlog',
     image: '/templates/lifestyle.png',
     tag: '新',
+    prompt: '我的日常生活分享，记录平凡中的小确幸',
   },
   {
     id: 'featured-education',
@@ -60,6 +64,7 @@ const featuredTemplates = [
     subtitle: '从零开始',
     image: '/templates/education.png',
     tag: '热门',
+    prompt: '零基础入门教程，手把手教你快速上手',
   },
   {
     id: 'featured-dramatic',
@@ -68,6 +73,7 @@ const featuredTemplates = [
     subtitle: '必看预测',
     image: '/templates/dramatic.png',
     tag: '新',
+    prompt: '2026年你必须知道的10大趋势预测',
   },
 ]
 
@@ -80,6 +86,7 @@ const moreTemplates = [
     subtitle: '效率翻倍秘籍',
     image: '/templates/more/tech1.png',
     tag: '',
+    prompt: '这些AI工具让我工作效率提升了10倍',
   },
   {
     id: 'more-tech2',
@@ -88,6 +95,7 @@ const moreTemplates = [
     subtitle: '从入门到精通',
     image: '/templates/more/tech2.png',
     tag: '',
+    prompt: 'ChatGPT从入门到精通，一篇文章讲清楚',
   },
   {
     id: 'more-game1',
@@ -96,6 +104,7 @@ const moreTemplates = [
     subtitle: '精彩攻略',
     image: '/templates/more/game1.png',
     tag: '',
+    prompt: '游戏世界探险记，带你发现隐藏彩蛋',
   },
   {
     id: 'more-game2',
@@ -104,6 +113,7 @@ const moreTemplates = [
     subtitle: '新手必备',
     image: '/templates/more/game2.png',
     tag: '',
+    prompt: '沙盒游戏生存指南，新手必看的技巧合集',
   },
   {
     id: 'more-game3',
@@ -112,6 +122,7 @@ const moreTemplates = [
     subtitle: '段位提升',
     image: '/templates/more/game3.png',
     tag: '',
+    prompt: '手游上分秘籍，3天从青铜到钻石',
   },
   {
     id: 'more-biz1',
@@ -120,6 +131,7 @@ const moreTemplates = [
     subtitle: '从0到1',
     image: '/templates/more/biz1.png',
     tag: '',
+    prompt: '个人品牌打造指南，从0到1建立影响力',
   },
   {
     id: 'more-life1',
@@ -128,6 +140,7 @@ const moreTemplates = [
     subtitle: '营养又美味',
     image: '/templates/more/life1.png',
     tag: '',
+    prompt: '一周健康减脂餐分享，好吃不长胖',
   },
   {
     id: 'more-life2',
@@ -136,6 +149,7 @@ const moreTemplates = [
     subtitle: '焕然一新',
     image: '/templates/more/life2.png',
     tag: '',
+    prompt: '花500块改造房间，效果惊艳',
   },
   {
     id: 'more-edu1',
@@ -144,6 +158,7 @@ const moreTemplates = [
     subtitle: '30天流利说',
     image: '/templates/more/edu1.png',
     tag: '',
+    prompt: '30天英语口语速成，每天10分钟见效',
   },
   {
     id: 'more-edu2',
@@ -152,6 +167,7 @@ const moreTemplates = [
     subtitle: '零基础也能学',
     image: '/templates/more/edu2.png',
     tag: '',
+    prompt: 'Python零基础入门，从安装到第一个项目',
   },
   {
     id: 'more-tech3',
@@ -160,6 +176,7 @@ const moreTemplates = [
     subtitle: '真实体验',
     image: '/templates/more/tech3.png',
     tag: '',
+    prompt: '2026年最值得买的数码产品评测',
   },
   {
     id: 'more-drama1',
@@ -168,6 +185,7 @@ const moreTemplates = [
     subtitle: '流量密码',
     image: '/templates/more/drama1.png',
     tag: '',
+    prompt: '揭秘爆款内容背后的流量密码',
   },
 ]
 
@@ -230,7 +248,7 @@ export default function TemplatesPage() {
                       </Badge>
                     )}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Link href={`/generate?style=${tpl.category}&title=${encodeURIComponent(tpl.title)}`}>
+                      <Link href={`/generate?style=${tpl.category}&title=${encodeURIComponent(tpl.title)}&prompt=${encodeURIComponent(tpl.prompt)}`}>
                         <Button>
                           <Sparkles className="w-4 h-4 mr-2" />
                           使用此模板
@@ -264,7 +282,7 @@ export default function TemplatesPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Link href={`/generate?style=${tpl.category}&title=${encodeURIComponent(tpl.title)}`}>
+                      <Link href={`/generate?style=${tpl.category}&title=${encodeURIComponent(tpl.title)}&prompt=${encodeURIComponent(tpl.prompt)}`}>
                         <Button>
                           <Sparkles className="w-4 h-4 mr-2" />
                           使用此模板

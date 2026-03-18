@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,6 +33,7 @@ interface Thumbnail {
 
 export default function GeneratePage() {
   const t = useTranslations('generate')
+  const searchParams = useSearchParams()
   
   const styles: Style[] = [
     { id: 'tech', name: t('style.tech.name'), icon: '💻' },
@@ -58,6 +60,23 @@ export default function GeneratePage() {
   const [thumbnails, setThumbnails] = useState<Thumbnail[]>([])
   const [error, setError] = useState<string | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+
+  // 从 URL 参数读取模板数据
+  useEffect(() => {
+    const styleParam = searchParams.get('style')
+    const titleParam = searchParams.get('title')
+    const promptParam = searchParams.get('prompt')
+    
+    if (styleParam && styles.some(s => s.id === styleParam)) {
+      setSelectedStyle(styleParam)
+    }
+    if (titleParam) {
+      setTitle(titleParam)
+    }
+    if (promptParam) {
+      setDescription(promptParam)
+    }
+  }, [searchParams])
 
   const handleGenerate = async () => {
     if (!title.trim()) {
