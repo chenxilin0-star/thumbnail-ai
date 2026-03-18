@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "generate": "生成封面",
+    "templates": "模板库",
+    "pricing": "定价",
+    "language": "语言"
+  },
+  "home": {
+    "hero": {
+      "title": "⚡ ThumbnailAI",
+      "subtitle": "10秒生成爆款视频封面，让每个创作者都能拥有专业设计师的能力",
+      "cta": {
+        "start": "开始生成",
+        "templates": "模板库"
+      }
+    },
+    "demo": {
+      "title": "你的视频标题",
+      "subtitle": "AI 自动生成专业封面",
+      "flow": "输入标题 → AI 生成 → 下载使用",
+      "flowSub": "3步完成，10秒出结果",
+      "cta": "立即体验"
+    },
+    "features": {
+      "title": "为什么选择 ThumbnailAI？",
+      "fast": {
+        "title": "10秒生成",
+        "desc": "输入标题，AI 自动生成 3 个专业封面方案"
+      },
+      "styles": {
+        "title": "5种风格",
+        "desc": "科技感、游戏风、商务风、可爱风、震撼风"
+      },
+      "free": {
+        "title": "免费使用",
+        "desc": "每天 5 张免费，付费版无限生成"
+      }
+    },
+    "useCases": {
+      "title": "适用场景",
+      "items": {
+        "youtube": "YouTube",
+        "bilibili": "B站游戏",
+        "tiktok": "抖音短视频",
+        "xiaohongshu": "小红书",
+        "education": "知识付费",
+        "business": "企业宣传",
+        "music": "音乐MV",
+        "tutorial": "教程视频"
+      }
+    },
+    "cta": {
+      "title": "准备好提升视频点击率了吗？",
+      "subtitle": "加入 1000+ 创作者，开始生成爆款封面",
+      "button": "免费开始"
+    },
+    "footer": "Made with ❤️ by ThumbnailAI © 2026"
+  },
+  "generate": {
+    "title": "生成视频封面",
+    "subtitle": "输入视频标题，AI 自动生成专业封面",
+    "form": {
+      "basicInfo": "基本信息",
+      "basicInfoDesc": "输入视频信息，AI 将根据此生成封面",
+      "title": "视频标题",
+      "titlePlaceholder": "例如：10个AI工具让你效率翻倍",
+      "titleCount": "{count}/100",
+      "description": "视频描述（可选）",
+      "descriptionPlaceholder": "简单描述视频内容"
+    },
+    "style": {
+      "title": "选择风格",
+      "tech": { "name": "科技感", "prompt": "cyberpunk, neon, futuristic" },
+      "gaming": { "name": "游戏风", "prompt": "gaming, esports, vibrant colors" },
+      "business": { "name": "商务风", "prompt": "professional, clean, minimal" },
+      "cute": { "name": "可爱风", "prompt": "cute, kawaii, pastel colors" },
+      "dramatic": { "name": "震撼风", "prompt": "dramatic, high contrast, bold" }
+    },
+    "platform": {
+      "title": "选择平台",
+      "youtube": { "name": "YouTube", "size": "1280x720" },
+      "tiktok": { "name": "TikTok", "size": "1080x1920" },
+      "instagram": { "name": "Instagram", "size": "1080x1080" },
+      "bilibili": { "name": "B站", "size": "1920x1080" },
+      "douyin": { "name": "抖音", "size": "1080x1920" },
+      "xiaohongshu": { "name": "小红书", "size": "1242x1660" }
+    },
+    "button": "生成封面",
+    "loading": "生成中...",
+    "result": {
+      "title": "生成结果",
+      "regenerate": "重新生成",
+      "empty": {
+        "title": "输入标题并点击生成",
+        "subtitle": "AI 将生成 3 个封面方案供你选择"
+      },
+      "variant": "方案 {index}",
+      "download": "下载"
+    },
+    "error": {
+      "emptyTitle": "请输入视频标题",
+      "apiError": "生成失败，请稍后重试"
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "retry": "重试"
+  }
+}

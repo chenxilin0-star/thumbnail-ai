@@ -1,7 +1,8 @@
 {
   "name": "thumbnail-ai",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
+  "description": "AI Video Thumbnail Generator - Generate stunning video thumbnails in 10 seconds",
   "scripts": {
     "dev": "next dev",
     "build": "next build --no-lint",
@@ -15,17 +16,17 @@
     "next": "15.1.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.27",
     "eslint": "^9",
     "eslint-config-next": "^15",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
     "typescript": "^5"
   }
 }

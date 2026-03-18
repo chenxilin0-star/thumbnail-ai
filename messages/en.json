@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "generate": "Generate",
+    "templates": "Templates",
+    "pricing": "Pricing",
+    "language": "Language"
+  },
+  "home": {
+    "hero": {
+      "title": "⚡ ThumbnailAI",
+      "subtitle": "Generate stunning video thumbnails in 10 seconds. Professional design power for every creator.",
+      "cta": {
+        "start": "Get Started",
+        "templates": "Templates"
+      }
+    },
+    "demo": {
+      "title": "Your Video Title",
+      "subtitle": "AI generates professional thumbnails automatically",
+      "flow": "Enter Title → AI Generate → Download",
+      "flowSub": "3 steps, 10 seconds",
+      "cta": "Try Now"
+    },
+    "features": {
+      "title": "Why Choose ThumbnailAI?",
+      "fast": {
+        "title": "10s Generation",
+        "desc": "Enter title, AI generates 3 professional thumbnail options"
+      },
+      "styles": {
+        "title": "5 Styles",
+        "desc": "Tech, Gaming, Business, Cute, Dramatic"
+      },
+      "free": {
+        "title": "Free to Use",
+        "desc": "5 free daily, unlimited with premium"
+      }
+    },
+    "useCases": {
+      "title": "Use Cases",
+      "items": {
+        "youtube": "YouTube",
+        "bilibili": "Gaming",
+        "tiktok": "TikTok",
+        "xiaohongshu": "Instagram",
+        "education": "Courses",
+        "business": "Business",
+        "music": "Music MV",
+        "tutorial": "Tutorials"
+      }
+    },
+    "cta": {
+      "title": "Ready to boost your video CTR?",
+      "subtitle": "Join 1000+ creators, start generating viral thumbnails",
+      "button": "Start Free"
+    },
+    "footer": "Made with ❤️ by ThumbnailAI © 2026"
+  },
+  "generate": {
+    "title": "Generate Thumbnail",
+    "subtitle": "Enter video title, AI generates professional thumbnails",
+    "form": {
+      "basicInfo": "Basic Info",
+      "basicInfoDesc": "Enter video info, AI will generate thumbnails based on this",
+      "title": "Video Title",
+      "titlePlaceholder": "e.g., 10 AI Tools to Double Your Productivity",
+      "titleCount": "{count}/100",
+      "description": "Description (Optional)",
+      "descriptionPlaceholder": "Briefly describe your video content"
+    },
+    "style": {
+      "title": "Select Style",
+      "tech": { "name": "Tech", "prompt": "cyberpunk, neon, futuristic" },
+      "gaming": { "name": "Gaming", "prompt": "gaming, esports, vibrant colors" },
+      "business": { "name": "Business", "prompt": "professional, clean, minimal" },
+      "cute": { "name": "Cute", "prompt": "cute, kawaii, pastel colors" },
+      "dramatic": { "name": "Dramatic", "prompt": "dramatic, high contrast, bold" }
+    },
+    "platform": {
+      "title": "Select Platform",
+      "youtube": { "name": "YouTube", "size": "1280x720" },
+      "tiktok": { "name": "TikTok", "size": "1080x1920" },
+      "instagram": { "name": "Instagram", "size": "1080x1080" },
+      "bilibili": { "name": "Bilibili", "size": "1920x1080" },
+      "douyin": { "name": "Douyin", "size": "1080x1920" },
+      "xiaohongshu": { "name": "Xiaohongshu", "size": "1242x1660" }
+    },
+    "button": "Generate Thumbnail",
+    "loading": "Generating...",
+    "result": {
+      "title": "Results",
+      "regenerate": "Regenerate",
+      "empty": {
+        "title": "Enter title and click generate",
+        "subtitle": "AI will generate 3 thumbnail options for you"
+      },
+      "variant": "Option {index}",
+      "download": "Download"
+    },
+    "error": {
+      "emptyTitle": "Please enter video title",
+      "apiError": "Generation failed, please try again"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry"
+  }
+}

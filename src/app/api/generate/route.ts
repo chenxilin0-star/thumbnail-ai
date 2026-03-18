@@ -1,0 +1,202 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+// 即梦 API 端点（本地部署）
+const JIMENG_API_URL = 'http://localhost:5100/v1/images/generations'
+
+interface GenerateRequest {
+  title: string
+  description?: string
+  platform: string
+  style: string
+}
+
+interface PlatformConfig {
+  name: string
+  width: number
+  height: number
+  ratio: string
+  promptHint: string  // 平台专属提示词
+}
+
+interface StyleConfig {
+  name: string
+  promptSuffix: string
+}
+
+const platforms: Record<string, PlatformConfig> = {
+  youtube: { 
+    name: 'YouTube', 
+    width: 1280, 
+    height: 720, 
+    ratio: '16:9',
+    promptHint: 'YouTube thumbnail style, bold text, expressive faces, high contrast, 16:9 widescreen, clickbait optimized, professional YouTuber aesthetic'
+  },
+  tiktok: { 
+    name: 'TikTok', 
+    width: 1080, 
+    height: 1920, 
+    ratio: '9:16',
+    promptHint: 'TikTok vertical thumbnail, trendy Gen-Z style, vibrant colors, dynamic energy, vertical 9:16 format, social media viral aesthetic, eye-catching for mobile scroll'
+  },
+  instagram: { 
+    name: 'Instagram', 
+    width: 1080, 
+    height: 1080, 
+    ratio: '1:1',
+    promptHint: 'Instagram square post, aesthetic lifestyle vibe, clean minimalist design, Instagram feed optimized, square 1:1 format, influencer style, cohesive color palette'
+  },
+  bilibili: { 
+    name: 'B站', 
+    width: 1920, 
+    height: 1080, 
+    ratio: '16:9',
+    promptHint: 'Bilibili封面风格, 动漫游戏元素, 中文视频封面, 二次元美学, 弹幕网站风格, 年轻化设计, 高饱和度色彩'
+  },
+  douyin: { 
+    name: '抖音', 
+    width: 1080, 
+    height: 1920, 
+    ratio: '9:16',
+    promptHint: '抖音封面风格, 竖版短视频, 潮流时尚, 网红美学, 竖屏9:16, 手机端优化, 高对比度, 吸引眼球'
+  },
+  xiaohongshu: { 
+    name: '小红书', 
+    width: 1242, 
+    height: 1660, 
+    ratio: '3:4',
+    promptHint: '小红书封面风格, 种草笔记美学, 生活分享感, 3:4竖版, 柔和色调, 精致生活感, 女性友好设计, 文艺清新'
+  },
+}
+
+const styles: Record<string, StyleConfig> = {
+  tech: { 
+    name: '科技感', 
+    promptSuffix: 'futuristic technology style, holographic elements, circuit board patterns, blue and purple neon glow, digital particles, cyber aesthetic, dark background with bright tech accents, holographic interface' 
+  },
+  gaming: { 
+    name: '游戏风', 
+    promptSuffix: 'gaming thumbnail style, dynamic action scene, explosive effects, vibrant RGB colors, esports aesthetic, bold typography space, dramatic lighting, game UI elements, epic composition' 
+  },
+  business: { 
+    name: '商务风', 
+    promptSuffix: 'professional business thumbnail, clean modern design, gradient background blue to purple, corporate style, elegant typography space, minimalist composition, trust and authority feeling, premium quality' 
+  },
+  cute: { 
+    name: '可爱风', 
+    promptSuffix: 'cute kawaii thumbnail style, pastel pink and blue colors, soft rounded shapes, adorable aesthetic, warm friendly atmosphere, sweet elements, playful design, dreamy background' 
+  },
+  dramatic: { 
+    name: '震撼风', 
+    promptSuffix: 'dramatic cinematic thumbnail, high contrast lighting, bold red and orange colors, powerful impact, intense atmosphere, epic scene, attention-grabbing, movie poster style, dynamic composition' 
+  },
+}
+
+function buildPrompt(title: string, description: string | undefined, style: StyleConfig, platform: PlatformConfig): string {
+  const promptParts = [
+    // 平台专属风格（最重要，放在最前面）
+    platform.promptHint,
+    // 核心定位
+    'professional video thumbnail design',
+    // 视频标题
+    `main title "${title}" prominently displayed`,
+    // 描述补充
+    description ? `video topic: ${description}` : '',
+    // 风格
+    style.promptSuffix,
+    // 质量要求
+    'high click-through rate',
+    'eye-catching',
+    'professional graphic design',
+    'vibrant colors',
+    'high resolution 2K',
+  ]
+  
+  return promptParts.filter(Boolean).join(', ')
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body: GenerateRequest = await request.json()
+    const { title, description, platform, style } = body
+
+    // Validation
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Title is required' },
+        { status: 400 }
+      )
+    }
+
+    const platformConfig = platforms[platform] || platforms.youtube
+    const styleConfig = styles[style] || styles.tech
+    const prompt = buildPrompt(title.trim(), description, styleConfig, platformConfig)
+
+    const sessionId = process.env.JIMENG_SESSION_ID
+    if (!sessionId) {
+      console.error('JIMENG_SESSION_ID not configured')
+      return NextResponse.json(
+        { success: false, error: 'API key not configured' },
+        { status: 500 }
+      )
+    }
+
+    // 调用即梦 API
+    const response = await fetch(JIMENG_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionId}`,
+      },
+      body: JSON.stringify({
+        model: 'jimeng-4.5',
+        prompt: prompt,
+        ratio: platformConfig.ratio,
+        resolution: '2k',
+        response_format: 'url',
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Jimeng API error:', response.status, errorText)
+      return NextResponse.json(
+        { success: false, error: `API error: ${response.status}` },
+        { status: response.status }
+      )
+    }
+
+    const data = await response.json()
+    
+    // 转换响应格式
+    const images = (data.data || []).map((item: any, index: number) => ({
+      id: `img_${Date.now()}_${index}`,
+      url: item.url,
+      width: 2048,
+      height: 2048,
+    }))
+
+    if (images.length === 0) {
+      console.error('No images in response:', data)
+      return NextResponse.json(
+        { success: false, error: 'No images generated' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      images,
+      metadata: {
+        platform: platformConfig.name,
+        style: styleConfig.name,
+        prompt: prompt,
+      },
+    })
+  } catch (error) {
+    console.error('Generate API error:', error)
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

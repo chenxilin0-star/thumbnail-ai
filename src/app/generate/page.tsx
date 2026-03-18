@@ -6,73 +6,143 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Sparkles, Download, Loader2, RefreshCw } from 'lucide-react'
+import { Sparkles, Download, Loader2, RefreshCw, AlertCircle } from 'lucide-react'
+import { useTranslations } from '@/i18n/client'
 
-const styles = [
-  { id: 'tech', name: '科技感', icon: '💻', colors: [['#6366F1','#8B5CF6'],['#0EA5E9','#6366F1'],['#1E293B','#6366F1']] },
-  { id: 'gaming', name: '游戏风', icon: '🎮', colors: [['#10B981','#059669'],['#F59E0B','#EF4444'],['#8B5CF6','#EC4899']] },
-  { id: 'business', name: '商务风', icon: '💼', colors: [['#1E293B','#475569'],['#7C3AED','#4F46E5'],['#0F172A','#334155']] },
-  { id: 'cute', name: '可爱风', icon: '🌸', colors: [['#EC4899','#F43F5E'],['#F97316','#EF4444'],['#A855F7','#EC4899']] },
-  { id: 'dramatic', name: '震撼风', icon: '⚡', colors: [['#EF4444','#B91C1C'],['#F59E0B','#DC2626'],['#7C3AED','#DC2626']] },
-]
+interface Platform {
+  id: string
+  name: string
+  size: string
+  w: number
+  h: number
+}
 
-const platforms = [
-  { id: 'youtube', name: 'YouTube', size: '1280x720', w: 1280, h: 720 },
-  { id: 'bilibili', name: 'B站', size: '1920x1080', w: 1920, h: 1080 },
-  { id: 'tiktok', name: '抖音', size: '1080x1920', w: 1080, h: 1920 },
-]
+interface Style {
+  id: string
+  name: string
+  icon: string
+}
 
 interface Thumbnail {
   id: string
-  colors: string[]
-  svgUrl: string
-}
-
-function generateThumbnails(title: string, styleId: string, platformId: string): Thumbnail[] {
-  const style = styles.find(s => s.id === styleId) || styles[0]
-  const platform = platforms.find(p => p.id === platformId) || platforms[0]
-  const displayTitle = title.length > 20 ? title.substring(0, 20) + '...' : title
-
-  return style.colors.map((colors, i) => {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${platform.w}" height="${platform.h}">
-      <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="${colors[0]}"/>
-        <stop offset="100%" stop-color="${colors[1]}"/>
-      </linearGradient></defs>
-      <rect width="100%" height="100%" fill="url(#g)"/>
-      <text x="50%" y="45%" text-anchor="middle" fill="white" font-size="${platform.w > 1000 ? 64 : 48}" font-weight="bold" font-family="Arial,sans-serif">${displayTitle}</text>
-      <text x="50%" y="55%" text-anchor="middle" fill="white" font-size="${platform.w > 1000 ? 28 : 20}" opacity="0.8" font-family="Arial,sans-serif">ThumbnailAI</text>
-    </svg>`
-    return {
-      id: `thumb_${Date.now()}_${i}`,
-      colors,
-      svgUrl: `data:image/svg+xml,${encodeURIComponent(svg)}`,
-    }
-  })
+  url: string
+  width: number
+  height: number
 }
 
 export default function GeneratePage() {
+  const t = useTranslations('generate')
+  
+  const styles: Style[] = [
+    { id: 'tech', name: t('style.tech.name'), icon: '💻' },
+    { id: 'gaming', name: t('style.gaming.name'), icon: '🎮' },
+    { id: 'business', name: t('style.business.name'), icon: '💼' },
+    { id: 'cute', name: t('style.cute.name'), icon: '🌸' },
+    { id: 'dramatic', name: t('style.dramatic.name'), icon: '⚡' },
+  ]
+
+  const platforms: Platform[] = [
+    { id: 'youtube', name: t('platform.youtube.name'), size: t('platform.youtube.size'), w: 1280, h: 720 },
+    { id: 'tiktok', name: t('platform.tiktok.name'), size: t('platform.tiktok.size'), w: 1080, h: 1920 },
+    { id: 'instagram', name: t('platform.instagram.name'), size: t('platform.instagram.size'), w: 1080, h: 1080 },
+    { id: 'bilibili', name: t('platform.bilibili.name'), size: t('platform.bilibili.size'), w: 1920, h: 1080 },
+    { id: 'douyin', name: t('platform.douyin.name'), size: t('platform.douyin.size'), w: 1080, h: 1920 },
+    { id: 'xiaohongshu', name: t('platform.xiaohongshu.name'), size: t('platform.xiaohongshu.size'), w: 1242, h: 1660 },
+  ]
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [selectedStyle, setSelectedStyle] = useState('tech')
   const [selectedPlatform, setSelectedPlatform] = useState('youtube')
   const [loading, setLoading] = useState(false)
   const [thumbnails, setThumbnails] = useState<Thumbnail[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
 
-  const handleGenerate = () => {
-    if (!title.trim()) return
+  const handleGenerate = async () => {
+    if (!title.trim()) {
+      setError(t('error.emptyTitle'))
+      return
+    }
+
     setLoading(true)
-    setTimeout(() => {
-      setThumbnails(generateThumbnails(title, selectedStyle, selectedPlatform))
+    setError(null)
+    setThumbnails([])
+
+    try {
+      // 使用 AbortController 设置 120 秒超时
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 120000)
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim() || undefined,
+          platform: selectedPlatform,
+          style: selectedStyle,
+        }),
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      // 先检查响应是否有效
+      const text = await response.text()
+      if (!text) {
+        throw new Error('Server returned empty response')
+      }
+
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        throw new Error('Server returned invalid JSON')
+      }
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || t('error.apiError'))
+      }
+
+      setThumbnails(data.images)
+    } catch (err) {
+      console.error('Generation error:', err)
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Request timeout - please try again')
+      } else {
+        setError(err instanceof Error ? err.message : t('error.apiError'))
+      }
+    } finally {
       setLoading(false)
-    }, 800)
+    }
   }
 
-  const handleDownload = (svgUrl: string, index: number) => {
-    const link = document.createElement('a')
-    link.href = svgUrl
-    link.download = `thumbnail-${index + 1}.svg`
-    link.click()
+  const handleDownload = async (url: string, index: number) => {
+    try {
+      // If it's a base64 data URL, download directly
+      if (url.startsWith('data:')) {
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `thumbnail-${index + 1}.png`
+        link.click()
+        return
+      }
+
+      // Otherwise fetch and download
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const blobUrl = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = `thumbnail-${index + 1}.png`
+      link.click()
+      URL.revokeObjectURL(blobUrl)
+    } catch (err) {
+      console.error('Download error:', err)
+    }
   }
 
   return (
@@ -80,38 +150,55 @@ export default function GeneratePage() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            生成视频封面
+            {t('title')}
           </h1>
-          <p className="text-slate-600">输入视频标题，AI 自动生成专业封面</p>
+          <p className="text-slate-600">{t('subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>基本信息</CardTitle>
-                <CardDescription>输入视频信息，AI 将根据此生成封面</CardDescription>
+                <CardTitle>{t('form.basicInfo')}</CardTitle>
+                <CardDescription>{t('form.basicInfoDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">视频标题 *</label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例如：10个AI工具让你效率翻倍" maxLength={100} />
-                  <p className="text-xs text-slate-500 mt-1">{title.length}/100</p>
+                  <label className="block text-sm font-medium mb-2">{t('form.title')} *</label>
+                  <Input 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    placeholder={t('form.titlePlaceholder')} 
+                    maxLength={100} 
+                  />
+                  <p className="text-xs text-slate-500 mt-1">{t('form.titleCount', { count: title.length })}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">视频描述（可选）</label>
-                  <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="简单描述视频内容" rows={3} />
+                  <label className="block text-sm font-medium mb-2">{t('form.description')}</label>
+                  <Textarea 
+                    value={description} 
+                    onChange={(e) => setDescription(e.target.value)} 
+                    placeholder={t('form.descriptionPlaceholder')} 
+                    rows={3} 
+                  />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader><CardTitle>选择风格</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{t('style.title')}</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid grid-cols-5 gap-2">
                   {styles.map((style) => (
-                    <button key={style.id} onClick={() => setSelectedStyle(style.id)}
-                      className={`p-3 rounded-lg border-2 transition-all ${selectedStyle === style.id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <button 
+                      key={style.id} 
+                      onClick={() => setSelectedStyle(style.id)}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        selectedStyle === style.id 
+                          ? 'border-purple-500 bg-purple-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
                       <div className="text-2xl mb-1">{style.icon}</div>
                       <div className="text-xs font-medium">{style.name}</div>
                     </button>
@@ -121,15 +208,19 @@ export default function GeneratePage() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle>选择平台</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{t('platform.title')}</CardTitle></CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {platforms.map((platform) => (
-                    <Button key={platform.id} variant={selectedPlatform === platform.id ? 'default' : 'outline'}
-                      onClick={() => setSelectedPlatform(platform.id)} className="flex-1">
+                    <Button 
+                      key={platform.id} 
+                      variant={selectedPlatform === platform.id ? 'default' : 'outline'}
+                      onClick={() => setSelectedPlatform(platform.id)} 
+                      className="flex-1 h-auto py-2"
+                    >
                       <div className="text-center">
-                        <div className="font-medium">{platform.name}</div>
-                        <div className="text-xs opacity-70">{platform.size}</div>
+                        <div className="font-medium text-xs">{platform.name}</div>
+                        <div className="text-[10px] opacity-70">{platform.size}</div>
                       </div>
                     </Button>
                   ))}
@@ -137,18 +228,50 @@ export default function GeneratePage() {
               </CardContent>
             </Card>
 
-            <Button onClick={handleGenerate} disabled={loading || !title.trim()} className="w-full h-12 text-lg" size="lg">
-              {loading ? (<><Loader2 className="w-5 h-5 mr-2 animate-spin" />生成中...</>) : (<><Sparkles className="w-5 h-5 mr-2" />生成封面</>)}
+            <Button 
+              onClick={handleGenerate} 
+              disabled={loading || !title.trim()} 
+              className="w-full h-12 text-lg" 
+              size="lg"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  {t('loading')}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  {t('button')}
+                </>
+              )}
             </Button>
+
+            {error && (
+              <Card className="border-red-200 bg-red-50">
+                <CardContent className="p-4 flex items-center gap-3 text-red-600">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <p className="text-sm">{error}</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div>
             <Card className="h-full">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>生成结果</CardTitle>
+                  <CardTitle>{t('result.title')}</CardTitle>
                   {thumbnails.length > 0 && (
-                    <Button variant="outline" size="sm" onClick={handleGenerate}><RefreshCw className="w-4 h-4 mr-1" />重新生成</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleGenerate}
+                      disabled={loading}
+                    >
+                      <RefreshCw className="w-4 h-4 mr-1" />
+                      {t('result.regenerate')}
+                    </Button>
                   )}
                 </div>
               </CardHeader>
@@ -156,20 +279,36 @@ export default function GeneratePage() {
                 {thumbnails.length === 0 ? (
                   <div className="text-center text-slate-400 py-16">
                     <Sparkles className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg mb-2">输入标题并点击生成</p>
-                    <p className="text-sm">AI 将生成 3 个封面方案供你选择</p>
+                    <p className="text-lg mb-2">{t('result.empty.title')}</p>
+                    <p className="text-sm">{t('result.empty.subtitle')}</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     {thumbnails.map((thumb, index) => (
-                      <div key={thumb.id} className="relative group">
-                        <div className="aspect-video rounded-lg overflow-hidden">
-                          <img src={thumb.svgUrl} alt={`方案 ${index + 1}`} className="w-full h-full object-cover" />
+                      <div 
+                        key={thumb.id} 
+                        className="relative group cursor-pointer"
+                        onClick={() => setPreviewImage(thumb.url)}
+                      >
+                        <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+                          <img 
+                            src={thumb.url} 
+                            alt={`${t('result.variant', { index: index + 1 })}`}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform"
+                          />
                         </div>
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                          <Button onClick={() => handleDownload(thumb.svgUrl, index)}><Download className="w-4 h-4 mr-2" />下载</Button>
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg gap-2">
+                          <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setPreviewImage(thumb.url); }}>
+                            🔍 预览
+                          </Button>
+                          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleDownload(thumb.url, index); }}>
+                            <Download className="w-4 h-4 mr-1" />
+                            下载
+                          </Button>
                         </div>
-                        <Badge className="absolute top-2 left-2">方案 {index + 1}</Badge>
+                        <Badge className="absolute top-2 left-2">
+                          {t('result.variant', { index: index + 1 })}
+                        </Badge>
                       </div>
                     ))}
                   </div>
@@ -178,6 +317,37 @@ export default function GeneratePage() {
             </Card>
           </div>
         </div>
+
+        {/* 图片预览弹窗 */}
+        {previewImage && (
+          <div 
+            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+            onClick={() => setPreviewImage(null)}
+          >
+            <div className="relative max-w-5xl max-h-[90vh]">
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <Button 
+                className="absolute top-2 right-2" 
+                variant="secondary"
+                onClick={() => setPreviewImage(null)}
+              >
+                ✕ 关闭
+              </Button>
+              <Button 
+                className="absolute bottom-2 right-2" 
+                onClick={(e) => { e.stopPropagation(); handleDownload(previewImage, 0); }}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                下载图片
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )
